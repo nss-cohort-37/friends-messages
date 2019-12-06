@@ -1,20 +1,23 @@
 // MessageList.js
 import { getMessagesByFriend } from "./MessageProvider.js"
 
-const friendListSection = document.querySelector(".friends")
+/*
+    CHANGE: The event target is now the `<main class=".appContainer">`
+            element. That element is now the Event Hub.
+*/
+const eventHub = document.querySelector("#appContainer")
 const contentTarget = document.querySelector(".messages")
 
 const MessageList = () => {
-    // Listen for when a friend is selected
-    friendListSection.addEventListener("change", changeEvent => {
-        // Make sure it's the change event of the friend checkbox
-        if (changeEvent.target.classList.contains("friend")) {
-
-            // Get messages for friend and render the list of messages
-            const friendName = changeEvent.target.value
-            const messages = getMessagesByFriend(friendName)
-            render(messages)
-        }
+    /*
+        CHANGE: The message list component is listening for a very
+                specific event that it cares about. It can then extract
+                the data in the payload and use it however it wants.
+    */
+    eventHub.addEventListener("friendSelected", event => {
+        const friendName = event.detail.friend
+        const messages = getMessagesByFriend(friendName)
+        render(messages)
     })
 
     const render = messageCollection => {
